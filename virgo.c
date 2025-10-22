@@ -173,13 +173,36 @@ static unsigned is_valid_window(HWND hwnd)
 	return (wi.dwStyle & WS_VISIBLE) && !(wi.dwExStyle & WS_EX_TOOLWINDOW);
 }
 
+// https://learn.microsoft.com/en-us/windows/win32/Debug/retrieving-the-last-error-code
+void error_exit()
+{
+    // Retrieve the system error message for the last-error code
+
+    LPVOID lpMsgBuf;
+    DWORD dw = GetLastError();
+
+    if (FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf,
+        0, NULL) == 0) {
+        MessageBox(NULL, TEXT("FormatMessage failed"), TEXT("Error"), MB_OK);
+        ExitProcess(dw);
+    }
+
+    MessageBox(NULL, (LPCTSTR)lpMsgBuf, TEXT("Error"), MB_OK);
+
+    LocalFree(lpMsgBuf);
+    ExitProcess(dw);
+}
+
 static void register_hotkey(unsigned id, unsigned mod, unsigned vk)
 {
-	if (!RegisterHotKey(NULL, id, mod, vk)) {
-		MessageBox(NULL, "could not register hotkey", "error",
-				   MB_ICONEXCLAMATION);
-		ExitProcess(1);
-	}
+	if (!RegisterHotKey(NULL, id, mod, vk)) { error_exit(); }
 }
 
 static BOOL enum_func(HWND hwnd, LPARAM lParam)

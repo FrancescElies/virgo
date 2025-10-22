@@ -13,8 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: winget install --silent zig
-      run: winget install --silent zig
+    - name: winget install zig
+      run: winget install --accept-package-agreements --accept-source-agreements --silent zig
     - name: build
       run: zig cc -lUser32 -lKernel32 -lc -lgdi32 -lshell32 -target native-windows-msvc virgo.c -o virgo.exe
     - uses: actions/upload-artifact@v4

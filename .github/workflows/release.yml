@@ -1,0 +1,25 @@
+name: Release binary
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: winget install zig
+        run: winget install --accept-package-agreements --accept-source-agreements --silent zig
+
+      - name: build
+        run: zig cc -lUser32 -lKernel32 -lc -lgdi32 -lshell32 -target native-windows-msvc virgo.c -o virgo.exe
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            virgo.exe
+

@@ -18,7 +18,7 @@
 #define MOD_NOREPEAT 0x4000
 #endif
 
-#define NUM_DESKTOPS 4
+#define NUM_DESKTOPS 9
 
 typedef struct {
 	HWND *windows;
@@ -227,14 +227,19 @@ static void virgo_update(Virgo *v)
 	EnumWindows((WNDENUMPROC)&enum_func, (LPARAM)v);
 }
 
+
+// see https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
+#define MOD1 MOD_ALT | MOD_NOREPEAT
+#define MOD2 MOD_CONTROL | MOD_NOREPEAT
+
 static void virgo_toggle_hotkeys(Virgo *v)
 {
 	unsigned i;
 	v->handle_hotkeys = !v->handle_hotkeys;
 	if (v->handle_hotkeys) {
 		for (i = 0; i < NUM_DESKTOPS; i++) {
-			register_hotkey(i * 2, MOD_ALT | MOD_NOREPEAT, i + 1 + '0');
-			register_hotkey(i * 2 + 1, MOD_CONTROL | MOD_NOREPEAT, i + 1 + '0');
+			register_hotkey(i * 2, MOD1, i + 1 + '0');
+			register_hotkey(i * 2 + 1, MOD2, i + 1 + '0');
 		}
 	} else {
 		for (i = 0; i < NUM_DESKTOPS; i++) {
@@ -249,13 +254,11 @@ static void virgo_init(Virgo *v)
 	unsigned i;
 	v->handle_hotkeys = 1;
 	for (i = 0; i < NUM_DESKTOPS; i++) {
-		register_hotkey(i * 2, MOD_ALT | MOD_NOREPEAT, i + 1 + '0');
-		register_hotkey(i * 2 + 1, MOD_CONTROL | MOD_NOREPEAT, i + 1 + '0');
+		register_hotkey(i * 2, MOD1, i + 1 + '0'); //  changes to desktop 1..4
+		register_hotkey(i * 2 + 1, MOD2, i + 1 + '0'); //  moves active window to desktop 1..4
 	}
-	register_hotkey(i * 2, MOD_ALT | MOD_CONTROL | MOD_SHIFT | MOD_NOREPEAT,
-					'Q');
-	register_hotkey(i * 2 + 1, MOD_ALT | MOD_CONTROL | MOD_SHIFT | MOD_NOREPEAT,
-					'S');
+	register_hotkey(i * 2 + 1, MOD1 , 0 + '0'); // Quit
+	register_hotkey(i * 2, MOD1 , 'Z'); //  starts/stops handling of other hotkeys
 	trayicon_init(&v->trayicon);
 }
 
@@ -320,4 +323,9 @@ void __main(void)
 	}
 	virgo_deinit(&v);
 	ExitProcess(0);
+}
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+{
+	__main();
 }

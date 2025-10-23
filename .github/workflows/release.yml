@@ -11,8 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: winget install zig
-        run: winget install --accept-package-agreements --accept-source-agreements --silent zig
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
 
       - name: build
         run: zig cc -lUser32 -lKernel32 -lc -lgdi32 -lshell32 -target native-windows-msvc virgo.c -o virgo.exe

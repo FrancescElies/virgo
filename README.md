@@ -10,12 +10,12 @@ Features:
 - shows only a tray icon with the number of the desktop you are on
 - Few keys to remember
 
-| Hotkey                         | Descrption                             |
-| -------------                  | --------------                         |
-| ALT + 1..4                     | changes to desktop 1..4                |
-| CTRL + 1..4              | moves active window to desktop 1..4    |
-| ALT + Z                        | starts/stops handling of other hotkeys |
-| ALT + 0                 | exits the program                      |
+| Hotkey                          | Descrption                             |
+| -------------                   | --------------                         |
+| ALT  + Z                        | starts/stops handling of other hotkeys |
+| ALT  + 0                        | exits the program                      |
+| ALT  + 1..4                     | changes to desktop 1..4                |
+| CTRL + 1..4                     | moves active window to desktop 1..4    |
 
 
 ## Build it
